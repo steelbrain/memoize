@@ -86,4 +86,28 @@ describe('memoize', function() {
     expect(await memoized(5)).toBe(2)
     expect(i).toBe(2)
   })
+  it('allows sharing of cache containers', function() {
+    let i = 0
+    const a = memoize(function() {
+      i++
+      return i
+    })
+    const b = memoize(function() {
+      i++
+      return i
+    })
+    a.__sb_cache = b.__sb_cache
+    expect(a()).toBe(1)
+    expect(b()).toBe(1)
+    expect(a()).toBe(1)
+    expect(b()).toBe(1)
+    expect(a()).toBe(1)
+    expect(b()).toBe(1)
+    expect(a()).toBe(1)
+    expect(b()).toBe(1)
+    expect(i).toBe(1)
+    expect(b(1)).toBe(2)
+    expect(a(1)).toBe(2)
+    expect(i).toBe(2)
+  })
 })
