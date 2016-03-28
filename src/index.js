@@ -11,7 +11,7 @@ function memoize(callback, options: Memoize$Options = {}) {
     const cacheKey = JSON.stringify(parameters)
     const parametersLength = parameters.length
 
-    if (cache[cacheKey]) {
+    if (cacheKey in cache) {
       const value = cache[cacheKey]
       if (options.async && !(value && value.constructor.name === 'Promise')) {
         return Promise.resolve(value)

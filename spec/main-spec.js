@@ -45,4 +45,17 @@ describe('memoize', function() {
     expect(memoized({ b: 6 })).toBe(2)
     expect(memoized({ c: 4 })).toBe(3)
   })
+  it('memoizes even when the function returns false', function() {
+    let i = 0
+    const memoized = memoize(function() {
+      i++
+      return false
+    })
+    expect(memoized()).toBe(false)
+    expect(memoized()).toBe(false)
+    expect(memoized()).toBe(false)
+    expect(memoized()).toBe(false)
+    expect(memoized()).toBe(false)
+    expect(i).toBe(1)
+  })
 })
