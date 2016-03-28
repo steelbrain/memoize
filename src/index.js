@@ -5,14 +5,12 @@ type Memoize$Options = {
 }
 
 function memoize(callback, options: Memoize$Options = {}) {
-  const cache = {}
-
   function memoized(...parameters) {
     const cacheKey = JSON.stringify(parameters)
     const parametersLength = parameters.length
 
-    if (cacheKey in cache) {
-      const value = cache[cacheKey]
+    if (cacheKey in memoized.__sb_cache) {
+      const value = memoized.__sb_cache[cacheKey]
       if (options.async && !(value && value.constructor.name === 'Promise')) {
         return Promise.resolve(value)
       }
@@ -32,19 +30,19 @@ function memoize(callback, options: Memoize$Options = {}) {
       value = callback.apply(this, parameters)
     }
 
-    cache[cacheKey] = value
+    memoized.__sb_cache[cacheKey] = value
     if (options.async) {
       if (!value || value.constructor.name !== 'Promise') {
         throw new Error('Memoization Error, Async function returned non-promise value')
       }
       return value.then(function(realValue) {
-        cache[cacheKey] = realValue
+        memoized.__sb_cache[cacheKey] = realValue
         return realValue
       })
     }
     return value
   }
-  memoized.__sb_cache = cache
+  memoized.__sb_cache = {}
 
   return memoized
 }
