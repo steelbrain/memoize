@@ -1,6 +1,7 @@
 'use babel'
 
 import memoize from '../'
+import { it, wait } from './helpers'
 
 describe('memoize', function() {
   it('works', function() {
@@ -57,5 +58,32 @@ describe('memoize', function() {
     expect(memoized()).toBe(false)
     expect(memoized()).toBe(false)
     expect(i).toBe(1)
+  })
+  it('works even with async functions', async function() {
+    let i = 0
+    const memoized = memoize(async function() {
+      i++
+      return i
+    }, { async: true })
+    expect(await memoized()).toBe(1)
+    expect(await memoized()).toBe(1)
+    expect(await memoized()).toBe(1)
+    expect(await memoized()).toBe(1)
+    expect(i).toBe(1)
+  })
+  it('does not make two calls if the function is lazy, it instead adds to queue', async function() {
+    let i = 0
+    const memoized = memoize(async function() {
+      i++
+      await wait(50)
+      return i
+    }, { async: true })
+    const promiseFirst = memoized()
+    const promiseSecond = memoized()
+    expect(await promiseFirst).toBe(1)
+    expect(await promiseSecond).toBe(1)
+    expect(i).toBe(1)
+    expect(await memoized(5)).toBe(2)
+    expect(i).toBe(2)
   })
 })
