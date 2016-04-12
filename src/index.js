@@ -4,12 +4,14 @@ type Memoize$Options = {
   async?: boolean
 }
 
+const CACHE_DELETED = Symbol('cache deleted')
+
 function memoize(callback, options: Memoize$Options = {}) {
   function memoized(...parameters) {
     const cacheKey = JSON.stringify(parameters)
     const parametersLength = parameters.length
 
-    if (cacheKey in memoized.__sb_cache) {
+    if (cacheKey in memoized.__sb_cache && memoized.__sb_cache[cacheKey] !== CACHE_DELETED) {
       const value = memoized.__sb_cache[cacheKey]
       if (options.async && !(value && value.constructor.name === 'Promise')) {
         return Promise.resolve(value)
@@ -38,6 +40,9 @@ function memoize(callback, options: Memoize$Options = {}) {
       return value.then(function(realValue) {
         memoized.__sb_cache[cacheKey] = realValue
         return realValue
+      }, function(error) {
+        memoized.__sb_cache[cacheKey] = CACHE_DELETED
+        throw error
       })
     }
     return value
