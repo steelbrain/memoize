@@ -110,4 +110,27 @@ describe('memoize', function() {
     expect(a(1)).toBe(2)
     expect(i).toBe(2)
   })
+  it('does not cache rejected promises', async function() {
+    let times = 0
+    const memoized = memoize(async function() {
+      times++
+      throw new Error('Hey')
+    }, { async: true })
+    try {
+      await memoized()
+    } catch (_) { /* No Op */ }
+    expect(times).toBe(1)
+    try {
+      await memoized()
+    } catch (_) { /* No Op */ }
+    expect(times).toBe(2)
+    try {
+      await memoized()
+    } catch (_) { /* No Op */ }
+    expect(times).toBe(3)
+    try {
+      await memoized()
+    } catch (_) { /* No Op */ }
+    expect(times).toBe(4)
+  })
 })
