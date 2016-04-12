@@ -1,6 +1,6 @@
 {
   "name": "sb-memoize",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Memoization in JS made easy",
   "main": "lib/index.js",
   "scripts": {
