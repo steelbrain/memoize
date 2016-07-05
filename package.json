@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/steelbrain/memoize#readme",
   "devDependencies": {
-    "eslint": "^2.4.0",
+    "eslint": "^3.0.1",
     "babel-eslint": "^6.0.0",
     "babel-preset-steelbrain": "^2.0.1",
     "eslint-config-airbnb": "^6.0.2",
