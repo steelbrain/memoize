@@ -1,7 +1,7 @@
 'use babel'
 
+import { it, wait } from 'jasmine-fix'
 import memoize from '../'
-import { it, wait } from './helpers'
 
 describe('memoize', function() {
   it('works', function() {
