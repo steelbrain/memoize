@@ -1,4 +1,4 @@
-'use strict'
+/* @flow */
 
 type Memoize$Options = {
   async?: boolean
@@ -6,8 +6,8 @@ type Memoize$Options = {
 
 const CACHE_DELETED = Symbol('cache deleted')
 
-function memoize(callback, options: Memoize$Options = {}) {
-  function memoized(...parameters) {
+function memoize(callback: Function, options: Memoize$Options = {}) {
+  function memoized(...parameters: any) {
     const cacheKey = JSON.stringify(parameters)
     const parametersLength = parameters.length
 
