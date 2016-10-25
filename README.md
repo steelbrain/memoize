@@ -20,6 +20,7 @@ module.exports = memoize
 ```
 
 ## Examples
+
 ```js
 import resolve from 'resolve'
 import promisify from 'sb-promisify'
@@ -33,6 +34,16 @@ resolveAsync('sb-memoize', { basedir: __dirname })
   .then(function(path) {
     console.log(path)
   })
+```
+
+## Notes
+
+This package automatically adds these methods on any memoized function
+
+```
+clearCache(): void
+setCache(parameters: Array<any>, cacheValue: any): void
+deleteCache(parameters: Array<any>): void
 ```
 
 ## License
