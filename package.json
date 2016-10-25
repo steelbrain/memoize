@@ -4,10 +4,11 @@
   "description": "Memoization in JS made easy",
   "main": "lib/index.js",
   "scripts": {
+    "lint": "(flow check) && (eslint .)",
     "test": "apm test",
-    "compile": "ucompiler go",
-    "lint": "eslint .",
-    "watch": "ucompiler watch"
+    "clean": "rm -rf lib",
+    "compile": "npm run clean && babel src --out-dir lib",
+    "watch": "npm run clean && babel src --out-dir lib --watch"
   },
   "repository": {
     "type": "git",
@@ -23,10 +24,10 @@
   },
   "homepage": "https://github.com/steelbrain/memoize#readme",
   "devDependencies": {
-    "babel-preset-steelbrain": "^2.0.1",
-    "eslint-config-steelbrain": "^1.0.1",
-    "jasmine-fix": "^1.0.0",
-    "ucompiler": "^3.1.8",
-    "ucompiler-plugin-babel": "^3.1.1"
+    "babel-cli": "^6.10.1",
+    "babel-preset-steelbrain": "^4.0.1",
+    "eslint-config-steelbrain": "^1.0.4",
+    "flow-bin": "^0.32.0",
+    "jasmine-fix": "^1.0.1"
   }
 }
