@@ -6,48 +6,50 @@ type Memoize$Options = {
 
 const CACHE_DELETED = Symbol('cache deleted')
 
-function memoize(callback: Function, options: Memoize$Options = {}) {
-  function memoized(...parameters: any) {
-    const cacheKey = JSON.stringify(parameters)
-    const parametersLength = parameters.length
+function getCacheKey(parameters: Array<any>): string {
+  return JSON.stringify(parameters)
+}
 
-    if (cacheKey in memoized.__sb_cache && memoized.__sb_cache[cacheKey] !== CACHE_DELETED) {
-      const value = memoized.__sb_cache[cacheKey]
+function memoize(callback: Function, options: Memoize$Options = {}) {
+  let cache = {}
+
+  function memoized(...parameters: Array<any>) {
+    const cacheKey = getCacheKey(parameters)
+
+    if (cacheKey in cache && cache[cacheKey] !== CACHE_DELETED) {
+      const value = cache[cacheKey]
       if (options.async && !(value && value.constructor.name === 'Promise')) {
         return Promise.resolve(value)
       }
       return value
     }
 
-    let value
-    if (parametersLength === 1) {
-      value = callback.call(this, parameters[0])
-    } else if (parametersLength === 2) {
-      value = callback.call(this, parameters[0], parameters[1])
-    } else if (parametersLength === 3) {
-      value = callback.call(this, parameters[0], parameters[1], parameters[2])
-    } else if (parametersLength === 4) {
-      value = callback.call(this, parameters[0], parameters[1], parameters[2], parameters[3])
-    } else {
-      value = callback.apply(this, parameters)
-    }
+    const value = callback.apply(this, parameters)
 
-    memoized.__sb_cache[cacheKey] = value
-    if (options.async) {
-      if (!value || value.constructor.name !== 'Promise') {
-        throw new Error('Memoization Error, Async function returned non-promise value')
-      }
-      return value.then(function(realValue) {
-        memoized.__sb_cache[cacheKey] = realValue
-        return realValue
-      }, function(error) {
-        memoized.__sb_cache[cacheKey] = CACHE_DELETED
-        throw error
-      })
+    cache[cacheKey] = value
+    if (!options.async) {
+      return value
     }
-    return value
+    if (!value || value.constructor.name !== 'Promise') {
+      throw new Error('Memoization Error, Async function returned non-promise value')
+    }
+    return value.then(function(realValue) {
+      cache[cacheKey] = realValue
+      return realValue
+    }, function(error) {
+      cache[cacheKey] = CACHE_DELETED
+      throw error
+    })
   }
-  memoized.__sb_cache = {}
+  memoized.clearCache = function() {
+    cache = {}
+  }
+  memoized.setCache = function(parameters: Array<any>, value: any) {
+    cache[getCacheKey(parameters)] = value
+  }
+  memoized.deleteCache = function(parameters: Array<any>) {
+    cache[getCacheKey(parameters)] = CACHE_DELETED
+  }
 
   return memoized
 }
