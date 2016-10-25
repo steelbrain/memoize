@@ -86,30 +86,6 @@ describe('memoize', function() {
     expect(await memoized(5)).toBe(2)
     expect(i).toBe(2)
   })
-  it('allows sharing of cache containers', function() {
-    let i = 0
-    const a = memoize(function() {
-      i++
-      return i
-    })
-    const b = memoize(function() {
-      i++
-      return i
-    })
-    a.__sb_cache = b.__sb_cache
-    expect(a()).toBe(1)
-    expect(b()).toBe(1)
-    expect(a()).toBe(1)
-    expect(b()).toBe(1)
-    expect(a()).toBe(1)
-    expect(b()).toBe(1)
-    expect(a()).toBe(1)
-    expect(b()).toBe(1)
-    expect(i).toBe(1)
-    expect(b(1)).toBe(2)
-    expect(a(1)).toBe(2)
-    expect(i).toBe(2)
-  })
   it('does not cache rejected promises', async function() {
     let times = 0
     const memoized = memoize(async function() {
@@ -132,5 +108,30 @@ describe('memoize', function() {
       await memoized()
     } catch (_) { /* No Op */ }
     expect(times).toBe(4)
+  })
+  it('has helpers to help you control caching on a memoized function', async function() {
+    let times = 0
+    const memoized = memoize(async function() {
+      times++
+      return times
+    })
+
+    expect(times).toBe(0)
+    memoized.setCache(['a'], 50)
+    expect(await memoized('a')).toBe(50)
+    expect(times).toBe(0)
+    expect(await memoized('b')).toBe(1)
+    expect(times).toBe(1)
+
+    memoized.deleteCache(['a'])
+    expect(await memoized('a')).toBe(2)
+    expect(times).toBe(2)
+
+    expect(await memoized('b')).toBe(1)
+    expect(times).toBe(2)
+
+    memoized.clearCache()
+    expect(await memoized('b')).toBe(3)
+    expect(times).toBe(3)
   })
 })
