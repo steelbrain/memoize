@@ -42,6 +42,7 @@ This package automatically adds these methods on any memoized function
 
 ```
 clearCache(): void
+getCache(parameters: Array<any>): any
 setCache(parameters: Array<any>, cacheValue: any): void
 deleteCache(parameters: Array<any>): void
 ```

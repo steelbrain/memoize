@@ -1,3 +1,7 @@
+## 2.1.0
+
+- Add `getCache(keys)` on every memoized function
+
 ## 2.0.0
 
 - Add `clearCache()` on every memoized function
