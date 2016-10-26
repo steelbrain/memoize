@@ -117,7 +117,9 @@ describe('memoize', function() {
     })
 
     expect(times).toBe(0)
+    expect(memoized.getCache(['a'])).toBe(undefined)
     memoized.setCache(['a'], 50)
+    expect(memoized.getCache(['a'])).toBe(50)
     expect(await memoized('a')).toBe(50)
     expect(times).toBe(0)
     expect(await memoized('b')).toBe(1)
