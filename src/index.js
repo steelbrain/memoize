@@ -44,6 +44,13 @@ function memoize(callback: Function, options: Memoize$Options = {}) {
   memoized.clearCache = function() {
     cache = {}
   }
+  memoized.getCache = function(parameters: Array<any>) {
+    const cachedValue = cache[getCacheKey(parameters)]
+    if (cachedValue === CACHE_DELETED) {
+      return undefined
+    }
+    return cachedValue
+  }
   memoized.setCache = function(parameters: Array<any>, value: any) {
     cache[getCacheKey(parameters)] = value
   }
