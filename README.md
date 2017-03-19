@@ -1,5 +1,7 @@
 Memoize
 =======
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/steelbrain/memoize.svg)](https://greenkeeper.io/)
 Memoize is a javascript helper utility to fulfill your function memoization needs.
 
 ## Installation
