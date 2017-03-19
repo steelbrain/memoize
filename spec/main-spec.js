@@ -63,6 +63,7 @@ describe('memoize', function() {
     let i = 0
     const memoized = memoize(async function() {
       i++
+      await wait(50)
       return i
     }, { async: true })
     expect(await memoized()).toBe(1)
@@ -90,6 +91,7 @@ describe('memoize', function() {
     let times = 0
     const memoized = memoize(async function() {
       times++
+      await wait(50)
       throw new Error('Hey')
     }, { async: true })
     try {
@@ -113,6 +115,7 @@ describe('memoize', function() {
     let times = 0
     const memoized = memoize(async function() {
       times++
+      await wait(50)
       return times
     })
 
